@@ -6,7 +6,6 @@ from terraform_generator import TerraformGenerator
 
 def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGPT-small-py"):
     
-    # Inicializar generador
     print("Inicializando generador de Terraform...")
     if model_path:
         generator = TerraformGenerator()
@@ -23,7 +22,6 @@ def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGP
     
     while True:
         try:
-            # Solicitar descripción
             description = input("Descripción del recurso Terraform: ").strip()
             
             if description.lower() in ['salir', 'exit', 'quit']:
@@ -33,7 +31,6 @@ def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGP
             if not description:
                 continue
             
-            # Generar código
             print("\nGenerando código Terraform...")
             terraform_code = generator.generate(description)
             
@@ -43,7 +40,6 @@ def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGP
             print(terraform_code)
             print("=" * 60 + "\n")
             
-            # Preguntar si quiere guardar
             save = input("¿Guardar en archivo? (s/n): ").strip().lower()
             if save == 's':
                 filename = input("Nombre del archivo (default: output.tf): ").strip()

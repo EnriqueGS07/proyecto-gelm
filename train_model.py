@@ -86,10 +86,8 @@ def main():
     
     args = parser.parse_args()
     
-    # Crear directorio de salida si no existe
     os.makedirs(args.output_dir, exist_ok=True)
     
-    # Cargar datos de entrenamiento
     training_data = load_training_data(args.data_dir)
     
     if not training_data:
@@ -97,10 +95,8 @@ def main():
         print("Por favor, asegúrate de tener archivos .json o .txt con el formato correcto")
         return
     
-    # Inicializar generador
     generator = TerraformGenerator(model_name=args.model_name)
     
-    # Entrenar modelo
     generator.train(
         training_data=training_data,
         output_dir=args.output_dir,
