@@ -133,7 +133,9 @@ class TerraformGenerator:
                 from langchain_huggingface import HuggingFacePipeline as NewHuggingFacePipeline
                 self.llm = NewHuggingFacePipeline(pipeline=pipe)
             except ImportError:
-                # Fallback a la versión antigua
+                # Fallback a la versión antigua (deprecada pero funcional)
+                import warnings
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
                 self.llm = HuggingFacePipeline(pipeline=pipe)
             
             # Crear prompt template para Terraform con ejemplos (few-shot learning)
@@ -260,18 +262,33 @@ Código Terraform:
         )
         
         # Configurar argumentos de entrenamiento
-        training_args = TrainingArguments(
-            output_dir=output_dir,
-            num_train_epochs=num_epochs,
-            per_device_train_batch_size=batch_size,
-            learning_rate=learning_rate,
-            logging_dir=f"{output_dir}/logs",
-            save_strategy="epoch",
-            evaluation_strategy="no",
-            push_to_hub=False,
-            remove_unused_columns=False,  # Necesario para datasets personalizados
-            report_to="none"  # Desactivar logging a servicios externos
-        )
+        # Intentar usar eval_strategy (versiones nuevas) o evaluation_strategy (versiones antiguas)
+        try:
+            training_args = TrainingArguments(
+                output_dir=output_dir,
+                num_train_epochs=num_epochs,
+                per_device_train_batch_size=batch_size,
+                learning_rate=learning_rate,
+                logging_dir=f"{output_dir}/logs",
+                save_strategy="epoch",
+                eval_strategy="no",  # Versiones nuevas de transformers
+                push_to_hub=False,
+                remove_unused_columns=False,
+                report_to="none"
+            )
+        except TypeError:
+            # Fallback para versiones antiguas
+            training_args = TrainingArguments(
+                output_dir=output_dir,
+                num_train_epochs=num_epochs,
+                per_device_train_batch_size=batch_size,
+                learning_rate=learning_rate,
+                logging_dir=f"{output_dir}/logs",
+                save_strategy="epoch",
+                push_to_hub=False,
+                remove_unused_columns=False,
+                report_to="none"
+            )
         
         # Data collator
         data_collator = DataCollatorForLanguageModeling(
