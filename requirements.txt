@@ -1,0 +1,24 @@
+# Core LangChain
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-core>=0.1.0
+
+# Hugging Face ecosystem (versiones compatibles)
+transformers>=4.30.0
+huggingface-hub>=0.16.0
+datasets>=2.12.0
+accelerate>=0.20.0
+
+# PyTorch - Instalar según tu sistema:
+# Para CPU: pip install torch
+# Para CUDA: pip install torch --index-url https://download.pytorch.org/whl/cu118
+# No incluido aquí para evitar conflictos de versión
+
+# Fine-tuning (opcional)
+# peft>=0.4.0  # Descomentar si necesitas fine-tuning avanzado
+
+# Utilidades
+sentencepiece
+protobuf>=3.20.0,<5.0.0
+python-dotenv>=1.0.0
+

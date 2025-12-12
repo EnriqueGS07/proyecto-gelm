@@ -1,0 +1,22 @@
+[
+  {
+    "description": "Crear un bucket S3 con versionado habilitado y encriptación",
+    "terraform_code": "resource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-example-bucket\"\n  \n  versioning {\n    enabled = true\n  }\n  \n  server_side_encryption_configuration {\n    rule {\n      apply_server_side_encryption_by_default {\n        sse_algorithm = \"AES256\"\n      }\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear una instancia EC2 con tipo t2.micro en la región us-east-1",
+    "terraform_code": "resource \"aws_instance\" \"example\" {\n  ami           = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t2.micro\"\n  \n  tags = {\n    Name = \"example-instance\"\n  }\n}"
+  },
+  {
+    "description": "Crear un grupo de seguridad que permite SSH desde cualquier IP",
+    "terraform_code": "resource \"aws_security_group\" \"ssh\" {\n  name        = \"ssh-access\"\n  description = \"Permite acceso SSH\"\n  \n  ingress {\n    from_port   = 22\n    to_port     = 22\n    protocol    = \"tcp\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n  \n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}"
+  },
+  {
+    "description": "Crear una VPC con subred pública y privada",
+    "terraform_code": "resource \"aws_vpc\" \"main\" {\n  cidr_block = \"10.0.0.0/16\"\n  \n  tags = {\n    Name = \"main-vpc\"\n  }\n}\n\nresource \"aws_subnet\" \"public\" {\n  vpc_id     = aws_vpc.main.id\n  cidr_block = \"10.0.1.0/24\"\n  \n  tags = {\n    Name = \"public-subnet\"\n  }\n}\n\nresource \"aws_subnet\" \"private\" {\n  vpc_id     = aws_vpc.main.id\n  cidr_block = \"10.0.2.0/24\"\n  \n  tags = {\n    Name = \"private-subnet\"\n  }\n}"
+  },
+  {
+    "description": "Crear un balanceador de carga de aplicación con listener HTTP",
+    "terraform_code": "resource \"aws_lb\" \"example\" {\n  name               = \"example-alb\"\n  internal           = false\n  load_balancer_type = \"application\"\n  security_groups    = [aws_security_group.alb.id]\n  subnets            = [aws_subnet.public.id]\n}\n\nresource \"aws_lb_listener\" \"example\" {\n  load_balancer_arn = aws_lb.example.arn\n  port              = \"80\"\n  protocol          = \"HTTP\"\n  \n  default_action {\n    type             = \"forward\"\n    target_group_arn = aws_lb_target_group.example.arn\n  }\n}"
+  }
+]
