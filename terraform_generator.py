@@ -120,11 +120,14 @@ class TerraformGenerator:
                 model=self.model,
                 tokenizer=self.tokenizer,
                 device=0 if self.device == "cuda" else -1,
+                max_new_tokens=300,  # Limitar tokens generados
                 max_length=self.max_length,
                 temperature=effective_temp,
                 do_sample=True,
                 return_full_text=False,
-                pad_token_id=self.tokenizer.eos_token_id
+                pad_token_id=self.tokenizer.eos_token_id,
+                eos_token_id=self.tokenizer.eos_token_id,
+                repetition_penalty=1.2  # Reducir repeticiones
             )
             
             # Crear LLM de LangChain
@@ -141,7 +144,7 @@ class TerraformGenerator:
             # Crear prompt template para Terraform con ejemplos (few-shot learning)
             prompt_template = PromptTemplate(
                 input_variables=["description"],
-                template="""Eres un experto en Terraform. Genera código Terraform válido y completo para AWS.
+                template="""Genera código Terraform válido y completo para AWS.
 
 Ejemplo 1:
 Descripción: Crear un bucket S3 con versionado habilitado
@@ -166,11 +169,8 @@ resource "aws_instance" "example" {{
   }}
 }}
 
-Ahora genera código Terraform para:
 Descripción: {description}
-
 Código Terraform:
-resource "aws_
 """
             )
             
@@ -206,7 +206,7 @@ resource "aws_
         self,
         training_data: List[Dict[str, str]],
         output_dir: str,
-        num_epochs: int = 3,
+        num_epochs: int = 5,
         batch_size: int = 4,
         learning_rate: float = 5e-5
     ):
@@ -345,36 +345,80 @@ Código Terraform:
                 result = result.get("text", str(result))
             result = str(result).strip()
             
-            # Filtrar basura común
-            if "TODO:" in result or "github.com" in result or "dongeran" in result.lower():
-                # Si contiene basura, intentar extraer solo el código Terraform
-                lines = result.split('\n')
-                terraform_lines = []
-                in_code = False
-                for line in lines:
-                    # Buscar líneas que parezcan código Terraform
-                    if 'resource "' in line or 'provider "' in line or 'variable "' in line:
-                        in_code = True
-                    if in_code:
-                        terraform_lines.append(line)
-                        # Detener si encontramos un cierre de bloque o comentarios sospechosos
-                        if line.strip() == '}' or ('TODO:' in line and terraform_lines):
-                            break
-                if terraform_lines:
-                    result = '\n'.join(terraform_lines)
-                else:
-                    # Si no se puede extraer código válido, devolver un mensaje
-                    result = "# Error: El modelo generó código inválido. Por favor, entrena el modelo con datos específicos de Terraform.\n# Ejecuta: python train_model.py --data_dir training_data/ --output_dir models/terraform_generator"
-            
-            # Remover el cierre del código si está presente
+            # Remover markdown code blocks si están presentes
+            if result.startswith("```terraform"):
+                result = result[12:].strip()
+            if result.startswith("```"):
+                result = result[3:].strip()
             if result.endswith("```"):
                 result = result[:-3].strip()
             
-            # Asegurar que el resultado termine con }
-            if result and not result.endswith('}') and 'resource "' in result:
-                result += '\n}'
+            # Detectar y extraer solo el primer bloque de código Terraform válido
+            lines = result.split('\n')
+            terraform_lines = []
+            in_resource = False
+            brace_count = 0
+            found_resource = False
             
-            return result
+            for line in lines:
+                line_stripped = line.strip()
+                
+                # Detectar inicio de resource
+                if 'resource "' in line and not found_resource:
+                    in_resource = True
+                    found_resource = True
+                    brace_count = line.count('{') - line.count('}')
+                    terraform_lines.append(line)
+                    continue
+                
+                # Si estamos dentro de un resource
+                if in_resource:
+                    brace_count += line.count('{') - line.count('}')
+                    terraform_lines.append(line)
+                    
+                    # Si cerramos todos los bloques, terminar
+                    if brace_count <= 0:
+                        break
+                    
+                    # Detectar código inválido y detener
+                    if any(invalid in line.lower() for invalid in ['aws_ebs_instance', 'aws_s3_instance', '```terraform']):
+                        # Remover esta línea y todo lo que sigue
+                        terraform_lines = terraform_lines[:-1]
+                        break
+                # Si encontramos otro resource después del primero, detener
+                elif 'resource "' in line and found_resource:
+                    break
+            
+            # Si encontramos código válido, usarlo
+            if terraform_lines and found_resource:
+                result = '\n'.join(terraform_lines)
+                # Asegurar que termine correctamente
+                if brace_count > 0:
+                    result += '\n' + '}' * brace_count
+            else:
+                # Si no hay código válido, intentar extraer cualquier resource
+                for line in lines:
+                    if 'resource "' in line or (terraform_lines and brace_count > 0):
+                        if 'resource "' in line:
+                            terraform_lines = [line]
+                            brace_count = line.count('{') - line.count('}')
+                        else:
+                            terraform_lines.append(line)
+                            brace_count += line.count('{') - line.count('}')
+                            if brace_count <= 0:
+                                break
+                
+                if terraform_lines:
+                    result = '\n'.join(terraform_lines)
+                else:
+                    result = "# Error: No se pudo generar código Terraform válido.\n# El modelo necesita más entrenamiento o la descripción no es clara."
+            
+            # Filtrar código claramente inválido
+            invalid_patterns = ['aws_ebs_instance', 'aws_s3_instance', 'TODO:', 'github.com', 'dongeran']
+            if any(pattern in result.lower() for pattern in invalid_patterns):
+                result = "# Error: El modelo generó código inválido.\n# Por favor, entrena el modelo con más datos:\n# python train_model.py --data_dir training_data/ --output_dir models/terraform_generator --epochs 5"
+            
+            return result.strip()
         except Exception as e:
             print(f"Error al generar código: {e}")
             return f"Error: {str(e)}"

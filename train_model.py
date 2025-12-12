@@ -82,8 +82,8 @@ def main():
     parser.add_argument(
         "--epochs",
         type=int,
-        default=3,
-        help="Número de épocas de entrenamiento"
+        default=5,
+        help="Número de épocas de entrenamiento (default: 5)"
     )
     parser.add_argument(
         "--batch_size",
