@@ -1,0 +1,374 @@
+[
+  {
+    "description": "Crear un volumen EBS con zona de disponibilidad y tamaño específico",
+    "terraform_code": "resource \"aws_ebs_volume\" \"example\" {\n  availability_zone = \"us-east-1a\"\n  size              = 20\n  type              = \"gp3\"\n  \n  tags = {\n    Name = \"example-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 simple",
+    "terraform_code": "resource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-example-bucket\"\n  \n  tags = {\n    Name = \"example-bucket\"\n  }\n}"
+  },
+  {
+    "description": "Crear una instancia EC2 básica",
+    "terraform_code": "resource \"aws_instance\" \"example\" {\n  ami           = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t2.micro\"\n  \n  tags = {\n    Name = \"example-instance\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con versionado",
+    "terraform_code": "resource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-bucket\"\n  \n  versioning {\n    enabled = true\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con encriptación",
+    "terraform_code": "resource \"aws_s3_bucket\" \"example\" {\n  bucket = \"my-encrypted-bucket\"\n  \n  server_side_encryption_configuration {\n    rule {\n      apply_server_side_encryption_by_default {\n        sse_algorithm = \"AES256\"\n      }\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un grupo de seguridad básico",
+    "terraform_code": "resource \"aws_security_group\" \"example\" {\n  name        = \"example-sg\"\n  description = \"Example security group\"\n  \n  ingress {\n    from_port   = 80\n    to_port     = 80\n    protocol    = \"tcp\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n  \n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}"
+  },
+  {
+    "description": "Crear una VPC básica",
+    "terraform_code": "resource \"aws_vpc\" \"example\" {\n  cidr_block = \"10.0.0.0/16\"\n  \n  tags = {\n    Name = \"example-vpc\"\n  }\n}"
+  },
+  {
+    "description": "Crear una subred en una VPC",
+    "terraform_code": "resource \"aws_subnet\" \"example\" {\n  vpc_id     = aws_vpc.example.id\n  cidr_block = \"10.0.1.0/24\"\n  \n  tags = {\n    Name = \"example-subnet\"\n  }\n}"
+  },
+  {
+    "description": "Crear un volumen EBS encriptado",
+    "terraform_code": "resource \"aws_ebs_volume\" \"encrypted\" {\n  availability_zone = \"us-east-1a\"\n  size              = 50\n  type              = \"gp3\"\n  encrypted         = true\n  \n  tags = {\n    Name = \"encrypted-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con website hosting",
+    "terraform_code": "resource \"aws_s3_bucket\" \"website\" {\n  bucket = \"my-website-bucket\"\n}\n\nresource \"aws_s3_bucket_website_configuration\" \"website\" {\n  bucket = aws_s3_bucket.website.id\n  \n  index_document {\n    suffix = \"index.html\"\n  }\n  \n  error_document {\n    key = \"error.html\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con object lock",
+    "terraform_code": "resource \"aws_s3_bucket\" \"locked\" {\n  bucket = \"my-locked-bucket\"\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"locked\" {\n  bucket = aws_s3_bucket.locked.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con notification configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"notifications\" {\n  bucket = \"my-notifications-bucket\"\n}\n\nresource \"aws_s3_bucket_notification\" \"notifications\" {\n  bucket = aws_s3_bucket.notifications.id\n  \n  eventbridge = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con intelligent tiering",
+    "terraform_code": "resource \"aws_s3_bucket\" \"tiering\" {\n  bucket = \"my-tiering-bucket\"\n}\n\nresource \"aws_s3_bucket_intelligent_tiering_configuration\" \"tiering\" {\n  bucket = aws_s3_bucket.tiering.id\n  name   = \"EntireBucket\"\n  \n  filter {\n    prefix = \"\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con object ownership controls",
+    "terraform_code": "resource \"aws_s3_bucket\" \"ownership\" {\n  bucket = \"my-ownership-bucket\"\n}\n\nresource \"aws_s3_bucket_ownership_controls\" \"ownership\" {\n  bucket = aws_s3_bucket.ownership.id\n  \n  rule {\n    object_ownership = \"BucketOwnerEnforced\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con metric configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"metrics\" {\n  bucket = \"my-metrics-bucket\"\n}\n\nresource \"aws_s3_bucket_metric\" \"metrics\" {\n  bucket = aws_s3_bucket.metrics.id\n  name   = \"EntireBucket\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con server access logging",
+    "terraform_code": "resource \"aws_s3_bucket\" \"logs\" {\n  bucket = \"my-logs-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"main\" {\n  bucket = \"my-main-bucket\"\n}\n\nresource \"aws_s3_bucket_logging\" \"main\" {\n  bucket = aws_s3_bucket.main.id\n  \n  target_bucket = aws_s3_bucket.logs.id\n  target_prefix = \"log/\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket policy para acceso público de lectura",
+    "terraform_code": "resource \"aws_s3_bucket\" \"public\" {\n  bucket = \"my-public-bucket\"\n}\n\nresource \"aws_s3_bucket_policy\" \"public\" {\n  bucket = aws_s3_bucket.public.id\n  \n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [{\n      Sid       = \"PublicReadGetObject\"\n      Effect    = \"Allow\"\n      Principal = \"*\"\n      Action    = \"s3:GetObject\"\n      Resource  = \"${aws_s3_bucket.public.arn}/*\"\n    }]\n  })\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket acl",
+    "terraform_code": "resource \"aws_s3_bucket\" \"acl_example\" {\n  bucket = \"my-acl-bucket\"\n}\n\nresource \"aws_s3_bucket_acl\" \"acl_example\" {\n  bucket = aws_s3_bucket.acl_example.id\n  acl    = \"private\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket versioning",
+    "terraform_code": "resource \"aws_s3_bucket\" \"versioned\" {\n  bucket = \"my-versioned-bucket\"\n}\n\nresource \"aws_s3_bucket_versioning\" \"versioned\" {\n  bucket = aws_s3_bucket.versioned.id\n  \n  versioning_configuration {\n    status = \"Enabled\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket server side encryption",
+    "terraform_code": "resource \"aws_s3_bucket\" \"encrypted\" {\n  bucket = \"my-encrypted-bucket\"\n}\n\nresource \"aws_s3_bucket_server_side_encryption_configuration\" \"encrypted\" {\n  bucket = aws_s3_bucket.encrypted.id\n  \n  rule {\n    apply_server_side_encryption_by_default {\n      sse_algorithm = \"AES256\"\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket public access block",
+    "terraform_code": "resource \"aws_s3_bucket\" \"private\" {\n  bucket = \"my-private-bucket\"\n}\n\nresource \"aws_s3_bucket_public_access_block\" \"private\" {\n  bucket = aws_s3_bucket.private.id\n  \n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n}"
+  },
+  {
+    "description": "Crear un volumen EBS y adjuntarlo a una instancia",
+    "terraform_code": "resource \"aws_ebs_volume\" \"data\" {\n  availability_zone = \"us-east-1a\"\n  size              = 100\n  type              = \"gp3\"\n  \n  tags = {\n    Name = \"data-volume\"\n  }\n}\n\nresource \"aws_volume_attachment\" \"data\" {\n  device_name = \"/dev/sdf\"\n  volume_id   = aws_ebs_volume.data.id\n  instance_id = aws_instance.example.id\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con snapshot",
+    "terraform_code": "resource \"aws_ebs_snapshot\" \"example\" {\n  volume_id = aws_ebs_volume.example.id\n  \n  tags = {\n    Name = \"example-snapshot\"\n  }\n}\n\nresource \"aws_ebs_volume\" \"from_snapshot\" {\n  availability_zone = \"us-east-1a\"\n  snapshot_id       = aws_ebs_snapshot.example.id\n  \n  tags = {\n    Name = \"volume-from-snapshot\"\n  }\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con IOPS provisionado",
+    "terraform_code": "resource \"aws_ebs_volume\" \"high_iops\" {\n  availability_zone = \"us-east-1a\"\n  size              = 100\n  type              = \"io1\"\n  iops              = 3000\n  \n  tags = {\n    Name = \"high-iops-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con throughput",
+    "terraform_code": "resource \"aws_ebs_volume\" \"high_throughput\" {\n  availability_zone = \"us-east-1a\"\n  size              = 200\n  type              = \"gp3\"\n  throughput        = 500\n  \n  tags = {\n    Name = \"high-throughput-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket notification para SQS",
+    "terraform_code": "resource \"aws_s3_bucket\" \"sqs_notifications\" {\n  bucket = \"my-sqs-notifications-bucket\"\n}\n\nresource \"aws_sqs_queue\" \"notifications\" {\n  name = \"s3-notifications-queue\"\n}\n\nresource \"aws_s3_bucket_notification\" \"sqs_notifications\" {\n  bucket = aws_s3_bucket.sqs_notifications.id\n  \n  queue {\n    queue_arn = aws_sqs_queue.notifications.arn\n    events    = [\"s3:ObjectCreated:*\"]\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket notification para SNS",
+    "terraform_code": "resource \"aws_s3_bucket\" \"sns_notifications\" {\n  bucket = \"my-sns-notifications-bucket\"\n}\n\nresource \"aws_sns_topic\" \"notifications\" {\n  name = \"s3-notifications-topic\"\n}\n\nresource \"aws_s3_bucket_notification\" \"sns_notifications\" {\n  bucket = aws_s3_bucket.sns_notifications.id\n  \n  topic {\n    topic_arn = aws_s3_topic.notifications.arn\n    events    = [\"s3:ObjectCreated:*\"]\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket replication configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"source\" {\n  bucket = \"my-source-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"destination\" {\n  bucket = \"my-destination-bucket\"\n}\n\nresource \"aws_s3_bucket_replication_configuration\" \"replication\" {\n  role   = aws_iam_role.replication.arn\n  bucket = aws_s3_bucket.source.id\n  \n  rule {\n    id     = \"replicate-all\"\n    status = \"Enabled\"\n    \n    destination {\n      bucket        = aws_s3_bucket.destination.arn\n      storage_class = \"STANDARD\"\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket request payment configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"requester_pays\" {\n  bucket = \"my-requester-pays-bucket\"\n}\n\nresource \"aws_s3_bucket_request_payment_configuration\" \"requester_pays\" {\n  bucket = aws_s3_bucket.requester_pays.id\n  payer  = \"Requester\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket acceleration configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"accelerated\" {\n  bucket = \"my-accelerated-bucket\"\n}\n\nresource \"aws_s3_bucket_acceleration_configuration\" \"accelerated\" {\n  bucket = aws_s3_bucket.accelerated.id\n  status = \"Enabled\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket inventory configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"inventory\" {\n  bucket = \"my-inventory-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"destination\" {\n  bucket = \"inventory-destination\"\n}\n\nresource \"aws_s3_bucket_inventory\" \"inventory\" {\n  bucket = aws_s3_bucket.inventory.id\n  name   = \"entire-bucket-inventory\"\n  \n  included_object_versions = \"All\"\n  \n  schedule {\n    frequency = \"Weekly\"\n  }\n  \n  destination {\n    bucket {\n      bucket_arn = aws_s3_bucket.destination.arn\n      format      = \"CSV\"\n      prefix      = \"inventory\"\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket analytics configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"analytics\" {\n  bucket = \"my-analytics-bucket\"\n}\n\nresource \"aws_s3_bucket_analytics_configuration\" \"analytics\" {\n  bucket = aws_s3_bucket.analytics.id\n  name   = \"entire-bucket-analytics\"\n  \n  storage_class_analysis {\n    data_export {\n      destination {\n        s3_bucket_destination {\n          bucket_arn = aws_s3_bucket.destination.arn\n          format     = \"CSV\"\n          prefix     = \"analytics\"\n        }\n      }\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object lock configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"object_lock\" {\n  bucket = \"my-object-lock-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"object_lock\" {\n  bucket = aws_s3_bucket.object_lock.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket cors configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"cors\" {\n  bucket = \"my-cors-bucket\"\n}\n\nresource \"aws_s3_bucket_cors_configuration\" \"cors\" {\n  bucket = aws_s3_bucket.cors.id\n  \n  cors_rule {\n    allowed_headers = [\"*\"]\n    allowed_methods = [\"GET\", \"PUT\", \"POST\"]\n    allowed_origins = [\"https://example.com\"]\n    expose_headers  = [\"ETag\"]\n    max_age_seconds = 3000\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket lifecycle configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"lifecycle\" {\n  bucket = \"my-lifecycle-bucket\"\n}\n\nresource \"aws_s3_bucket_lifecycle_configuration\" \"lifecycle\" {\n  bucket = aws_s3_bucket.lifecycle.id\n  \n  rule {\n    id     = \"archive-old-files\"\n    status = \"Enabled\"\n    \n    expiration {\n      days = 90\n    }\n    \n    transition {\n      days          = 30\n      storage_class = \"STANDARD_IA\"\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket notification para EventBridge",
+    "terraform_code": "resource \"aws_s3_bucket\" \"eventbridge\" {\n  bucket = \"my-eventbridge-bucket\"\n}\n\nresource \"aws_s3_bucket_notification\" \"eventbridge\" {\n  bucket = aws_s3_bucket.eventbridge.id\n  \n  eventbridge = true\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con kms key para encriptación",
+    "terraform_code": "resource \"aws_kms_key\" \"ebs\" {\n  description             = \"KMS key for EBS encryption\"\n  deletion_window_in_days = 10\n}\n\nresource \"aws_ebs_volume\" \"encrypted_kms\" {\n  availability_zone = \"us-east-1a\"\n  size              = 100\n  type              = \"gp3\"\n  encrypted         = true\n  kms_key_id        = aws_kms_key.ebs.arn\n  \n  tags = {\n    Name = \"encrypted-kms-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con multi attach habilitado",
+    "terraform_code": "resource \"aws_ebs_volume\" \"multi_attach\" {\n  availability_zone = \"us-east-1a\"\n  size              = 100\n  type              = \"io1\"\n  iops              = 1000\n  multi_attach_enabled = true\n  \n  tags = {\n    Name = \"multi-attach-volume\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket versioning y MFA delete",
+    "terraform_code": "resource \"aws_s3_bucket\" \"mfa_versioned\" {\n  bucket = \"my-mfa-versioned-bucket\"\n}\n\nresource \"aws_s3_bucket_versioning\" \"mfa_versioned\" {\n  bucket = aws_s3_bucket.mfa_versioned.id\n  \n  versioning_configuration {\n    status     = \"Enabled\"\n    mfa_delete = \"Enabled\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket logging",
+    "terraform_code": "resource \"aws_s3_bucket\" \"logs\" {\n  bucket = \"my-logs-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"main\" {\n  bucket = \"my-main-bucket\"\n}\n\nresource \"aws_s3_bucket_logging\" \"main\" {\n  bucket = aws_s3_bucket.main.id\n  \n  target_bucket = aws_s3_bucket.logs.id\n  target_prefix = \"log/\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket notification para múltiples eventos",
+    "terraform_code": "resource \"aws_s3_bucket\" \"multi_events\" {\n  bucket = \"my-multi-events-bucket\"\n}\n\nresource \"aws_s3_bucket_notification\" \"multi_events\" {\n  bucket = aws_s3_bucket.multi_events.id\n  \n  lambda_function {\n    lambda_function_arn = aws_lambda_function.processor.arn\n    events              = [\"s3:ObjectCreated:*\", \"s3:ObjectRemoved:*\"]\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket policy para forzar HTTPS",
+    "terraform_code": "resource \"aws_s3_bucket\" \"secure\" {\n  bucket = \"my-secure-bucket\"\n}\n\nresource \"aws_s3_bucket_policy\" \"secure\" {\n  bucket = aws_s3_bucket.secure.id\n  \n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [{\n      Effect = \"Deny\"\n      Principal = \"*\"\n      Action    = \"s3:*\"\n      Resource  = [\n        aws_s3_bucket.secure.arn,\n        \"${aws_s3_bucket.secure.arn}/*\"\n      ]\n      Condition = {\n        Bool = {\n          \"aws:SecureTransport\" = \"false\"\n        }\n      }\n    }]\n  })\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket notification filter",
+    "terraform_code": "resource \"aws_s3_bucket\" \"filtered\" {\n  bucket = \"my-filtered-bucket\"\n}\n\nresource \"aws_s3_bucket_notification\" \"filtered\" {\n  bucket = aws_s3_bucket.filtered.id\n  \n  lambda_function {\n    lambda_function_arn = aws_lambda_function.processor.arn\n    events              = [\"s3:ObjectCreated:*\"]\n    filter_prefix       = \"uploads/\"\n    filter_suffix       = \".jpg\"\n  }\n}"
+  },
+  {
+    "description": "Crear un volumen EBS con snapshot copy",
+    "terraform_code": "resource \"aws_ebs_snapshot\" \"source\" {\n  volume_id = aws_ebs_volume.source.id\n  \n  tags = {\n    Name = \"source-snapshot\"\n  }\n}\n\nresource \"aws_ebs_snapshot_copy\" \"destination\" {\n  source_snapshot_id = aws_ebs_snapshot.source.id\n  source_region      = \"us-east-1\"\n  \n  tags = {\n    Name = \"destination-snapshot\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object",
+    "terraform_code": "resource \"aws_s3_bucket\" \"objects\" {\n  bucket = \"my-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"example\" {\n  bucket = aws_s3_bucket.objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n  \n  etag = filemd5(\"example.txt\")\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con metadata",
+    "terraform_code": "resource \"aws_s3_bucket\" \"metadata\" {\n  bucket = \"my-metadata-bucket\"\n}\n\nresource \"aws_s3_object\" \"with_metadata\" {\n  bucket       = aws_s3_bucket.metadata.id\n  key          = \"example.txt\"\n  source       = \"example.txt\"\n  content_type = \"text/plain\"\n  \n  metadata = {\n    \"custom-key\" = \"custom-value\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con server side encryption",
+    "terraform_code": "resource \"aws_s3_bucket\" \"encrypted_objects\" {\n  bucket = \"my-encrypted-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"encrypted\" {\n  bucket                 = aws_s3_bucket.encrypted_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  server_side_encryption = \"AES256\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con storage class",
+    "terraform_code": "resource \"aws_s3_bucket\" \"storage_class\" {\n  bucket = \"my-storage-class-bucket\"\n}\n\nresource \"aws_s3_object\" \"ia\" {\n  bucket       = aws_s3_bucket.storage_class.id\n  key          = \"example.txt\"\n  source       = \"example.txt\"\n  storage_class = \"STANDARD_IA\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con acl",
+    "terraform_code": "resource \"aws_s3_bucket\" \"acl_objects\" {\n  bucket = \"my-acl-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"public\" {\n  bucket = aws_s3_bucket.acl_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n  acl    = \"public-read\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con cache control",
+    "terraform_code": "resource \"aws_s3_bucket\" \"cache\" {\n  bucket = \"my-cache-bucket\"\n}\n\nresource \"aws_s3_object\" \"cached\" {\n  bucket       = aws_s3_bucket.cache.id\n  key          = \"example.txt\"\n  source       = \"example.txt\"\n  cache_control = \"max-age=3600\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con content encoding",
+    "terraform_code": "resource \"aws_s3_bucket\" \"encoding\" {\n  bucket = \"my-encoding-bucket\"\n}\n\nresource \"aws_s3_object\" \"gzipped\" {\n  bucket          = aws_s3_bucket.encoding.id\n  key             = \"example.txt.gz\"\n  source          = \"example.txt\"\n  content_encoding = \"gzip\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con content disposition",
+    "terraform_code": "resource \"aws_s3_bucket\" \"disposition\" {\n  bucket = \"my-disposition-bucket\"\n}\n\nresource \"aws_s3_object\" \"attachment\" {\n  bucket             = aws_s3_bucket.disposition.id\n  key                = \"example.txt\"\n  source             = \"example.txt\"\n  content_disposition = \"attachment; filename=\\\"example.txt\\\"\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con website redirect",
+    "terraform_code": "resource \"aws_s3_bucket\" \"redirect\" {\n  bucket = \"my-redirect-bucket\"\n}\n\nresource \"aws_s3_object\" \"redirected\" {\n  bucket           = aws_s3_bucket.redirect.id\n  key              = \"old-page.html\"\n  website_redirect = \"https://example.com/new-page.html\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock",
+    "terraform_code": "resource \"aws_s3_bucket\" \"object_lock_bucket\" {\n  bucket = \"my-object-lock-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_object\" \"locked\" {\n  bucket        = aws_s3_bucket.object_lock_bucket.id\n  key           = \"example.txt\"\n  source        = \"example.txt\"\n  object_lock_legal_hold_status = \"ON\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con tagging",
+    "terraform_code": "resource \"aws_s3_bucket\" \"tagged_objects\" {\n  bucket = \"my-tagged-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"tagged\" {\n  bucket = aws_s3_bucket.tagged_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n  \n  tags = {\n    Environment = \"production\"\n    Project     = \"example\"\n  }\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con versioning",
+    "terraform_code": "resource \"aws_s3_bucket\" \"versioned_objects\" {\n  bucket = \"my-versioned-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_versioning\" \"versioned_objects\" {\n  bucket = aws_s3_bucket.versioned_objects.id\n  \n  versioning_configuration {\n    status = \"Enabled\"\n  }\n}\n\nresource \"aws_s3_object\" \"versioned\" {\n  bucket = aws_s3_bucket.versioned_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con kms encryption",
+    "terraform_code": "resource \"aws_kms_key\" \"s3\" {\n  description             = \"KMS key for S3\"\n  deletion_window_in_days = 10\n}\n\nresource \"aws_s3_bucket\" \"kms_encrypted\" {\n  bucket = \"my-kms-encrypted-bucket\"\n}\n\nresource \"aws_s3_object\" \"kms_encrypted\" {\n  bucket                 = aws_s3_bucket.kms_encrypted.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  server_side_encryption = \"aws:kms\"\n  kms_key_id             = aws_kms_key.s3.arn\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con multipart upload",
+    "terraform_code": "resource \"aws_s3_bucket\" \"multipart\" {\n  bucket = \"my-multipart-bucket\"\n}\n\nresource \"aws_s3_object\" \"large\" {\n  bucket = aws_s3_bucket.multipart.id\n  key    = \"large-file.zip\"\n  source = \"large-file.zip\"\n  \n  etag = filemd5(\"large-file.zip\")\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con requester pays",
+    "terraform_code": "resource \"aws_s3_bucket\" \"requester_pays_objects\" {\n  bucket = \"my-requester-pays-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_request_payment_configuration\" \"requester_pays_objects\" {\n  bucket = aws_s3_bucket.requester_pays_objects.id\n  payer  = \"Requester\"\n}\n\nresource \"aws_s3_object\" \"requester_pays\" {\n  bucket = aws_s3_bucket.requester_pays_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con lifecycle rule",
+    "terraform_code": "resource \"aws_s3_bucket\" \"lifecycle_objects\" {\n  bucket = \"my-lifecycle-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_lifecycle_configuration\" \"lifecycle_objects\" {\n  bucket = aws_s3_bucket.lifecycle_objects.id\n  \n  rule {\n    id     = \"delete-old-objects\"\n    status = \"Enabled\"\n    \n    expiration {\n      days = 365\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"lifecycle\" {\n  bucket = aws_s3_bucket.lifecycle_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con intelligent tiering",
+    "terraform_code": "resource \"aws_s3_bucket\" \"tiering_objects\" {\n  bucket = \"my-tiering-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_intelligent_tiering_configuration\" \"tiering_objects\" {\n  bucket = aws_s3_bucket.tiering_objects.id\n  name   = \"EntireBucket\"\n  \n  filter {\n    prefix = \"\"\n  }\n}\n\nresource \"aws_s3_object\" \"tiering\" {\n  bucket = aws_s3_bucket.tiering_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con analytics",
+    "terraform_code": "resource \"aws_s3_bucket\" \"analytics_objects\" {\n  bucket = \"my-analytics-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_analytics_configuration\" \"analytics_objects\" {\n  bucket = aws_s3_bucket.analytics_objects.id\n  name   = \"EntireBucket\"\n}\n\nresource \"aws_s3_object\" \"analytics\" {\n  bucket = aws_s3_bucket.analytics_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con metrics",
+    "terraform_code": "resource \"aws_s3_bucket\" \"metrics_objects\" {\n  bucket = \"my-metrics-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_metric\" \"metrics_objects\" {\n  bucket = aws_s3_bucket.metrics_objects.id\n  name   = \"EntireBucket\"\n}\n\nresource \"aws_s3_object\" \"metrics\" {\n  bucket = aws_s3_bucket.metrics_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con inventory",
+    "terraform_code": "resource \"aws_s3_bucket\" \"inventory_objects\" {\n  bucket = \"my-inventory-objects-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"inventory_destination\" {\n  bucket = \"inventory-destination\"\n}\n\nresource \"aws_s3_bucket_inventory\" \"inventory_objects\" {\n  bucket = aws_s3_bucket.inventory_objects.id\n  name   = \"EntireBucket\"\n  \n  included_object_versions = \"All\"\n  \n  schedule {\n    frequency = \"Weekly\"\n  }\n  \n  destination {\n    bucket {\n      bucket_arn = aws_s3_bucket.inventory_destination.arn\n      format      = \"CSV\"\n      prefix      = \"inventory\"\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"inventory\" {\n  bucket = aws_s3_bucket.inventory_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con replication",
+    "terraform_code": "resource \"aws_s3_bucket\" \"replication_source\" {\n  bucket = \"my-replication-source-bucket\"\n}\n\nresource \"aws_s3_bucket\" \"replication_destination\" {\n  bucket = \"my-replication-destination-bucket\"\n}\n\nresource \"aws_s3_bucket_replication_configuration\" \"replication\" {\n  role   = aws_iam_role.replication.arn\n  bucket = aws_s3_bucket.replication_source.id\n  \n  rule {\n    id     = \"replicate-all\"\n    status = \"Enabled\"\n    \n    destination {\n      bucket        = aws_s3_bucket.replication_destination.arn\n      storage_class = \"STANDARD\"\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"replicated\" {\n  bucket = aws_s3_bucket.replication_source.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con eventbridge",
+    "terraform_code": "resource \"aws_s3_bucket\" \"eventbridge_objects\" {\n  bucket = \"my-eventbridge-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_notification\" \"eventbridge_objects\" {\n  bucket = aws_s3_bucket.eventbridge_objects.id\n  \n  eventbridge = true\n}\n\nresource \"aws_s3_object\" \"eventbridge\" {\n  bucket = aws_s3_bucket.eventbridge_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con cloudwatch metrics",
+    "terraform_code": "resource \"aws_s3_bucket\" \"cloudwatch_objects\" {\n  bucket = \"my-cloudwatch-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_metric\" \"cloudwatch_objects\" {\n  bucket = aws_s3_bucket.cloudwatch_objects.id\n  name   = \"EntireBucket\"\n}\n\nresource \"aws_s3_object\" \"cloudwatch\" {\n  bucket = aws_s3_bucket.cloudwatch_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con sse kms",
+    "terraform_code": "resource \"aws_kms_key\" \"s3_objects\" {\n  description             = \"KMS key for S3 objects\"\n  deletion_window_in_days = 10\n}\n\nresource \"aws_s3_bucket\" \"sse_kms_objects\" {\n  bucket = \"my-sse-kms-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"sse_kms\" {\n  bucket                 = aws_s3_bucket.sse_kms_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  server_side_encryption = \"aws:kms\"\n  kms_key_id             = aws_kms_key.s3_objects.arn\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con sse s3",
+    "terraform_code": "resource \"aws_s3_bucket\" \"sse_s3_objects\" {\n  bucket = \"my-sse-s3-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"sse_s3\" {\n  bucket                 = aws_s3_bucket.sse_s3_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  server_side_encryption = \"AES256\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con sse customer",
+    "terraform_code": "resource \"aws_s3_bucket\" \"sse_customer_objects\" {\n  bucket = \"my-sse-customer-objects-bucket\"\n}\n\nresource \"aws_s3_object\" \"sse_customer\" {\n  bucket                 = aws_s3_bucket.sse_customer_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  server_side_encryption = \"aws:kms\"\n  kms_key_id             = \"alias/aws/s3\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con website redirect all",
+    "terraform_code": "resource \"aws_s3_bucket\" \"redirect_all_objects\" {\n  bucket = \"my-redirect-all-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_website_configuration\" \"redirect_all_objects\" {\n  bucket = aws_s3_bucket.redirect_all_objects.id\n  \n  redirect_all_requests_to {\n    host_name = \"https://example.com\"\n    protocol  = \"https\"\n  }\n}\n\nresource \"aws_s3_object\" \"redirect_all\" {\n  bucket = aws_s3_bucket.redirect_all_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con routing rules",
+    "terraform_code": "resource \"aws_s3_bucket\" \"routing_objects\" {\n  bucket = \"my-routing-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_website_configuration\" \"routing_objects\" {\n  bucket = aws_s3_bucket.routing_objects.id\n  \n  index_document {\n    suffix = \"index.html\"\n  }\n  \n  error_document {\n    key = \"error.html\"\n  }\n  \n  routing_rule {\n    condition {\n      key_prefix_equals = \"docs/\"\n    }\n    redirect {\n      replace_key_prefix_with = \"documents/\"\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"routing\" {\n  bucket = aws_s3_bucket.routing_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con website configuration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"website_objects\" {\n  bucket = \"my-website-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_website_configuration\" \"website_objects\" {\n  bucket = aws_s3_bucket.website_objects.id\n  \n  index_document {\n    suffix = \"index.html\"\n  }\n  \n  error_document {\n    key = \"error.html\"\n  }\n}\n\nresource \"aws_s3_object\" \"website\" {\n  bucket = aws_s3_bucket.website_objects.id\n  key    = \"index.html\"\n  source = \"index.html\"\n  content_type = \"text/html\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con public access",
+    "terraform_code": "resource \"aws_s3_bucket\" \"public_objects\" {\n  bucket = \"my-public-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_public_access_block\" \"public_objects\" {\n  bucket = aws_s3_bucket.public_objects.id\n  \n  block_public_acls       = false\n  block_public_policy     = false\n  ignore_public_acls      = false\n  restrict_public_buckets = false\n}\n\nresource \"aws_s3_bucket_acl\" \"public_objects\" {\n  bucket = aws_s3_bucket.public_objects.id\n  acl    = \"public-read\"\n}\n\nresource \"aws_s3_object\" \"public\" {\n  bucket = aws_s3_bucket.public_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n  acl    = \"public-read\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con private access",
+    "terraform_code": "resource \"aws_s3_bucket\" \"private_objects\" {\n  bucket = \"my-private-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_public_access_block\" \"private_objects\" {\n  bucket = aws_s3_bucket.private_objects.id\n  \n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n}\n\nresource \"aws_s3_bucket_acl\" \"private_objects\" {\n  bucket = aws_s3_bucket.private_objects.id\n  acl    = \"private\"\n}\n\nresource \"aws_s3_object\" \"private\" {\n  bucket = aws_s3_bucket.private_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n  acl    = \"private\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con bucket key",
+    "terraform_code": "resource \"aws_s3_bucket\" \"bucket_key_objects\" {\n  bucket = \"my-bucket-key-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_server_side_encryption_configuration\" \"bucket_key_objects\" {\n  bucket = aws_s3_bucket.bucket_key_objects.id\n  \n  rule {\n    apply_server_side_encryption_by_default {\n      sse_algorithm = \"aws:kms\"\n    }\n    bucket_key_enabled = true\n  }\n}\n\nresource \"aws_s3_object\" \"bucket_key\" {\n  bucket = aws_s3_bucket.bucket_key_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con transfer acceleration",
+    "terraform_code": "resource \"aws_s3_bucket\" \"transfer_acceleration_objects\" {\n  bucket = \"my-transfer-acceleration-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_acceleration_configuration\" \"transfer_acceleration_objects\" {\n  bucket = aws_s3_bucket.transfer_acceleration_objects.id\n  status = \"Enabled\"\n}\n\nresource \"aws_s3_object\" \"transfer_acceleration\" {\n  bucket = aws_s3_bucket.transfer_acceleration_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con request payment",
+    "terraform_code": "resource \"aws_s3_bucket\" \"request_payment_objects\" {\n  bucket = \"my-request-payment-objects-bucket\"\n}\n\nresource \"aws_s3_bucket_request_payment_configuration\" \"request_payment_objects\" {\n  bucket = aws_s3_bucket.request_payment_objects.id\n  payer  = \"Requester\"\n}\n\nresource \"aws_s3_object\" \"request_payment\" {\n  bucket = aws_s3_bucket.request_payment_objects.id\n  key    = \"example.txt\"\n  source = \"example.txt\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock legal hold",
+    "terraform_code": "resource \"aws_s3_bucket\" \"legal_hold_objects\" {\n  bucket = \"my-legal-hold-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"legal_hold_objects\" {\n  bucket = aws_s3_bucket.legal_hold_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"legal_hold\" {\n  bucket                      = aws_s3_bucket.legal_hold_objects.id\n  key                         = \"example.txt\"\n  source                      = \"example.txt\"\n  object_lock_legal_hold_status = \"ON\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock retention",
+    "terraform_code": "resource \"aws_s3_bucket\" \"retention_objects\" {\n  bucket = \"my-retention-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"retention_objects\" {\n  bucket = aws_s3_bucket.retention_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"retention\" {\n  bucket                 = aws_s3_bucket.retention_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock governance",
+    "terraform_code": "resource \"aws_s3_bucket\" \"governance_objects\" {\n  bucket = \"my-governance-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"governance_objects\" {\n  bucket = aws_s3_bucket.governance_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"governance\" {\n  bucket                 = aws_s3_bucket.governance_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock compliance",
+    "terraform_code": "resource \"aws_s3_bucket\" \"compliance_objects\" {\n  bucket = \"my-compliance-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"compliance_objects\" {\n  bucket = aws_s3_bucket.compliance_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"COMPLIANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"compliance\" {\n  bucket                 = aws_s3_bucket.compliance_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"COMPLIANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock bypass",
+    "terraform_code": "resource \"aws_s3_bucket\" \"bypass_objects\" {\n  bucket = \"my-bypass-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"bypass_objects\" {\n  bucket = aws_s3_bucket.bypass_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"bypass\" {\n  bucket                 = aws_s3_bucket.bypass_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  force_destroy          = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"override_objects\" {\n  bucket = \"my-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"override_objects\" {\n  bucket = aws_s3_bucket.override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"override\" {\n  bucket                 = aws_s3_bucket.override_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock legal hold override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"legal_hold_override_objects\" {\n  bucket = \"my-legal-hold-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"legal_hold_override_objects\" {\n  bucket = aws_s3_bucket.legal_hold_override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"legal_hold_override\" {\n  bucket                      = aws_s3_bucket.legal_hold_override_objects.id\n  key                         = \"example.txt\"\n  source                      = \"example.txt\"\n  object_lock_legal_hold_status = \"ON\"\n  override_default_retention   = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock retention override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"retention_override_objects\" {\n  bucket = \"my-retention-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"retention_override_objects\" {\n  bucket = aws_s3_bucket.retention_override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"retention_override\" {\n  bucket                 = aws_s3_bucket.retention_override_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock governance override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"governance_override_objects\" {\n  bucket = \"my-governance-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"governance_override_objects\" {\n  bucket = aws_s3_bucket.governance_override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"governance_override\" {\n  bucket                 = aws_s3_bucket.governance_override_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock compliance override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"compliance_override_objects\" {\n  bucket = \"my-compliance-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"compliance_override_objects\" {\n  bucket = aws_s3_bucket.compliance_override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"COMPLIANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"compliance_override\" {\n  bucket                 = aws_s3_bucket.compliance_override_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"COMPLIANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock bypass override",
+    "terraform_code": "resource \"aws_s3_bucket\" \"bypass_override_objects\" {\n  bucket = \"my-bypass-override-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"bypass_override_objects\" {\n  bucket = aws_s3_bucket.bypass_override_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"bypass_override\" {\n  bucket                 = aws_s3_bucket.bypass_override_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n  force_destroy          = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock legal hold override bypass",
+    "terraform_code": "resource \"aws_s3_bucket\" \"legal_hold_override_bypass_objects\" {\n  bucket = \"my-legal-hold-override-bypass-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"legal_hold_override_bypass_objects\" {\n  bucket = aws_s3_bucket.legal_hold_override_bypass_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"legal_hold_override_bypass\" {\n  bucket                      = aws_s3_bucket.legal_hold_override_bypass_objects.id\n  key                         = \"example.txt\"\n  source                      = \"example.txt\"\n  object_lock_legal_hold_status = \"ON\"\n  override_default_retention   = true\n  force_destroy                = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock retention override bypass",
+    "terraform_code": "resource \"aws_s3_bucket\" \"retention_override_bypass_objects\" {\n  bucket = \"my-retention-override-bypass-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"retention_override_bypass_objects\" {\n  bucket = aws_s3_bucket.retention_override_bypass_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"retention_override_bypass\" {\n  bucket                 = aws_s3_bucket.retention_override_bypass_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n  force_destroy          = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock governance override bypass",
+    "terraform_code": "resource \"aws_s3_bucket\" \"governance_override_bypass_objects\" {\n  bucket = \"my-governance-override-bypass-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"governance_override_bypass_objects\" {\n  bucket = aws_s3_bucket.governance_override_bypass_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"GOVERNANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"governance_override_bypass\" {\n  bucket                 = aws_s3_bucket.governance_override_bypass_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"GOVERNANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n  force_destroy          = true\n}"
+  },
+  {
+    "description": "Crear un bucket S3 con bucket object con object lock compliance override bypass",
+    "terraform_code": "resource \"aws_s3_bucket\" \"compliance_override_bypass_objects\" {\n  bucket = \"my-compliance-override-bypass-objects-bucket\"\n  \n  object_lock_enabled = true\n}\n\nresource \"aws_s3_bucket_object_lock_configuration\" \"compliance_override_bypass_objects\" {\n  bucket = aws_s3_bucket.compliance_override_bypass_objects.id\n  \n  rule {\n    default_retention {\n      mode = \"COMPLIANCE\"\n      days = 30\n    }\n  }\n}\n\nresource \"aws_s3_object\" \"compliance_override_bypass\" {\n  bucket                 = aws_s3_bucket.compliance_override_bypass_objects.id\n  key                    = \"example.txt\"\n  source                 = \"example.txt\"\n  object_lock_mode       = \"COMPLIANCE\"\n  object_lock_retain_until_date = \"2024-12-31T23:59:59Z\"\n  override_default_retention = true\n  force_destroy          = true\n}"
+  }
+]

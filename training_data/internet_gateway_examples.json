@@ -1,0 +1,14 @@
+[
+  {
+    "description": "Crear un Internet Gateway y asociarlo a una VPC",
+    "terraform_code": "resource \"aws_internet_gateway\" \"example\" {\n  vpc_id = aws_vpc.example.id\n  \n  tags = {\n    Name = \"example-igw\"\n  }\n}"
+  },
+  {
+    "description": "Crear un Internet Gateway básico",
+    "terraform_code": "resource \"aws_internet_gateway\" \"main\" {\n  vpc_id = aws_vpc.main.id\n}"
+  },
+  {
+    "description": "Crear un Internet Gateway con tags",
+    "terraform_code": "resource \"aws_internet_gateway\" \"example\" {\n  vpc_id = aws_vpc.example.id\n  \n  tags = {\n    Name        = \"example-igw\"\n    Environment = \"production\"\n  }\n}"
+  }
+]

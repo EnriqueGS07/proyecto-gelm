@@ -1,13 +1,60 @@
 """
-Script principal interactivo para generar código Terraform
+Script principal interactivo para generar código Terraform.
+
+Este script proporciona una interfaz de línea de comandos interactiva
+para generar código Terraform usando modelos pre-entrenados o entrenados.
+
+Uso:
+    python main.py                          # Usa modelo pre-entrenado
+    python main.py --model_path models/...  # Usa modelo entrenado
+    python main.py --model_name gpt2        # Usa modelo específico
+
+Características:
+    - Modo interactivo con bucle continuo
+    - Opción de guardar código generado en archivos
+    - Soporte para modelos pre-entrenados y entrenados
+    - Manejo de errores y excepciones
+
+Autor: Proyecto GELM
+Fecha: 2024
 """
+
 import argparse
 import os
 from terraform_generator import TerraformGenerator
 
 
 def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGPT-small-py"):
-    """Modo interactivo para generar código Terraform"""
+    """
+    Modo interactivo para generar código Terraform.
+    
+    Este modo permite al usuario generar múltiples recursos Terraform
+    en una sesión interactiva. El usuario puede:
+    - Ingresar descripciones en lenguaje natural
+    - Ver el código generado inmediatamente
+    - Guardar el código en archivos .tf
+    - Salir en cualquier momento
+    
+    Args:
+        model_path (str, optional): Ruta al modelo entrenado local.
+            Si se proporciona, carga el modelo desde esta ruta.
+            Si es None, usa el modelo pre-entrenado especificado.
+        
+        model_name (str): Nombre del modelo pre-entrenado de Hugging Face.
+            Solo se usa si model_path es None.
+            Por defecto: "microsoft/CodeGPT-small-py"
+    
+    Comandos especiales:
+        - "salir", "exit", "quit": Termina la sesión
+        - Cualquier otra entrada: Se trata como descripción para generar código
+    
+    Ejemplo de uso:
+        >>> interactive_mode()
+        Descripción del recurso Terraform: Crear un bucket S3
+        [Código generado...]
+        ¿Guardar en archivo? (s/n): s
+        Nombre del archivo: mi_bucket.tf
+    """
     
     # Inicializar generador
     print("Inicializando generador de Terraform...")
@@ -67,18 +114,41 @@ def interactive_mode(model_path: str = None, model_name: str = "microsoft/CodeGP
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generador interactivo de código Terraform")
+    """
+    Función principal que parsea argumentos y ejecuta el modo interactivo.
+    
+    Esta función configura el parser de argumentos y delega la ejecución
+    al modo interactivo con los parámetros proporcionados.
+    
+    Argumentos de línea de comandos:
+        --model_path: Ruta al modelo entrenado (opcional)
+        --model_name: Nombre del modelo pre-entrenado (por defecto: microsoft/CodeGPT-small-py)
+    
+    Ejemplo:
+        python main.py --model_path models/terraform_generator
+        python main.py --model_name gpt2
+    """
+    parser = argparse.ArgumentParser(
+        description="Generador interactivo de código Terraform",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Ejemplos de uso:
+  python main.py
+  python main.py --model_path models/terraform_generator
+  python main.py --model_name gpt2
+        """
+    )
     parser.add_argument(
         "--model_path",
         type=str,
         default=None,
-        help="Ruta al modelo entrenado"
+        help="Ruta al modelo entrenado (si no se especifica, usa modelo pre-entrenado)"
     )
     parser.add_argument(
         "--model_name",
         type=str,
         default="microsoft/CodeGPT-small-py",
-        help="Modelo base de Hugging Face a usar"
+        help="Modelo base de Hugging Face a usar (solo si no se especifica --model_path)"
     )
     
     args = parser.parse_args()

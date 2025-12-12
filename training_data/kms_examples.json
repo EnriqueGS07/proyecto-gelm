@@ -1,0 +1,26 @@
+[
+  {
+    "description": "Crear una clave KMS para encriptación",
+    "terraform_code": "resource \"aws_kms_key\" \"example\" {\n  description             = \"KMS key for encryption\"\n  deletion_window_in_days = 10\n  \n  tags = {\n    Name = \"example-kms-key\"\n  }\n}"
+  },
+  {
+    "description": "Crear una clave KMS con rotación automática habilitada",
+    "terraform_code": "resource \"aws_kms_key\" \"example\" {\n  description             = \"KMS key with rotation\"\n  deletion_window_in_days = 10\n  enable_key_rotation     = true\n  \n  tags = {\n    Name = \"rotating-kms-key\"\n  }\n}"
+  },
+  {
+    "description": "Crear una clave KMS con política personalizada",
+    "terraform_code": "resource \"aws_kms_key\" \"example\" {\n  description             = \"KMS key with custom policy\"\n  deletion_window_in_days = 10\n  \n  policy = jsonencode({\n    Version = \"2012-10-17\"\n    Statement = [{\n      Sid    = \"Enable IAM User Permissions\"\n      Effect = \"Allow\"\n      Principal = {\n        AWS = \"arn:aws:iam::123456789012:root\"\n      }\n      Action   = \"kms:*\"\n      Resource = \"*\"\n    }]\n  })\n  \n  tags = {\n    Name = \"custom-policy-kms-key\"\n  }\n}"
+  },
+  {
+    "description": "Crear una clave KMS alias",
+    "terraform_code": "resource \"aws_kms_key\" \"example\" {\n  description             = \"KMS key\"\n  deletion_window_in_days = 10\n}\n\nresource \"aws_kms_alias\" \"example\" {\n  name          = \"alias/example-key\"\n  target_key_id = aws_kms_key.example.key_id\n}"
+  },
+  {
+    "description": "Crear una clave KMS para S3",
+    "terraform_code": "resource \"aws_kms_key\" \"s3\" {\n  description             = \"KMS key for S3 encryption\"\n  deletion_window_in_days = 10\n  \n  tags = {\n    Name = \"s3-kms-key\"\n  }\n}\n\nresource \"aws_s3_bucket\" \"encrypted\" {\n  bucket = \"my-encrypted-bucket\"\n}\n\nresource \"aws_s3_bucket_server_side_encryption_configuration\" \"encrypted\" {\n  bucket = aws_s3_bucket.encrypted.id\n  \n  rule {\n    apply_server_side_encryption_by_default {\n      kms_master_key_id = aws_kms_key.s3.arn\n      sse_algorithm     = \"aws:kms\"\n    }\n  }\n}"
+  },
+  {
+    "description": "Crear una clave KMS para EBS",
+    "terraform_code": "resource \"aws_kms_key\" \"ebs\" {\n  description             = \"KMS key for EBS encryption\"\n  deletion_window_in_days = 10\n  \n  tags = {\n    Name = \"ebs-kms-key\"\n  }\n}\n\nresource \"aws_ebs_volume\" \"encrypted\" {\n  availability_zone = \"us-east-1a\"\n  size              = 100\n  type              = \"gp3\"\n  encrypted         = true\n  kms_key_id        = aws_kms_key.ebs.arn\n  \n  tags = {\n    Name = \"encrypted-volume\"\n  }\n}"
+  }
+]
